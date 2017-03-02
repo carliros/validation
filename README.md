@@ -88,7 +88,7 @@ then the result of the last step is 2 , proving that the number is invalid.
 
     Explain: Why do we use Integer here instead of Int or even Integral a ⇒ a?
 
-### Reading and Showing Credit Card Numbers
+**Reading and Showing Credit Card Numbers**
 
 It's fine to use an Integer for a credit card number internally, but we (as consumers)
 are accustomed to seeing the number with a certain formatting. In the following exercises, 
@@ -118,7 +118,7 @@ have fewer digits, use zeroes to fill out the remaining digits. Thus, 123456789 
 
     Explain: How can your function fail?
 
-### Identifying Credit Card Type
+**Identifying Credit Card Type**
 
     Credit cards not only have a formula for validating the digits; they also have formulas
     for determining the type of card. The type is distinguished by issuer and length:
