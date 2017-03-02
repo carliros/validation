@@ -1,136 +1,142 @@
-## Validación
+# Validation
+**Sean Leather, adapted by Andres Löh**
 
-Utilice el archivo Validation.hs. Para empezar todos las funciones están undefined,
-pero el archivo puede ser cargado en el intérprete GHCi a pesar de que todos los ejercicios
-no están completos.
+Use the file Practicum1.hs linked from the wiki. All of the functions are "undefined" to start with,
+ allowing you to load the file into GHCi even though you haven't completed all the exercises.
 
-### Validar números de tarjetas de crédito
+### Validating Credit Card Numbers
 
-¿Alguna vez te as preguntado como las aplicaciones web validan el número de la tarjeta de crédito
-cuando se hace una compra on-line? Ellos no verifican en una gran base de datos de números y tampoco 
-hacen magia. De hecho, la mayoría de los proveedores de crédito se basan en una fórmula de suma de 
-comprobación para distinguir los números válidos de la colección de dígitos al azar (o errores de escritura).
+Have you ever wondered how websites validate your credit card number when you shop online? 
+They don't check a massive database of numbers, and they don't use magic. 
+In fact, most credit providers rely on a checksum formula for distinguishing
+valid numbers from random collection of digits (or typing mistakes).
 
-En esta sección, podrás implementar el algoritmo de validación de tarjetas de crédito. Sigue los siguientes pasos:
+In this section, you will implement the validation algorithm for credit cards. It follows these 
+steps:
 
-* Duplicar el valor de cada segunda cifra empezando por la derecha.
-* Suma los dígitos de los valores que se duplicaron y los dígitos no duplicados del número original.
-* Calcular el módulo de la suma dividiendo por 10.
+* Double the value of every second digit beginning with the rightmost.
+* Add the digits of the doubled values and the undoubled digits from the original number.
+* Calculate the modulus of the sum divided by 10.
 
-Si el resultado es igual a 0, entonces el numero es válido. He aquí un ejemplo de los resultados de cada paso en el número 4012888888881881.
+If the result equals 0, then the number is valid. Here is an example of the results of each step on
+ the number 4012888888881881.
 
-* Con el fin de comenzar con el dígito más a la derecha, producimos una lista inversa de dígitos. A continuación, duplicamos cada segundo dígito. 
-
-```
-Resultado: [1, 16, 8, 2, 8, 16, 8, 16, 8, 16, 8, 16, 2, 2, 0, 8].
-```
-
-* Se suma todos los dígitos de la lista del resultado anterior. Tenga en cuenta que tenemos que volver
- a dividir los elementos de la lista en sus dígitos (por ejemplo, 16 se convierte en [1, 6]).
+* In order to start with the rightmost digit, we produce a reversed list of digits. Then, we double
+ every second digit.
 
 ```
-Resultado: 90.
+Result: [1,16,8,2,8,16,8,16,8,16,8,16,2,2,0,8].
 ```
 
-* Por último, se calcula el módulo de 90 sobre 10.
+* We sum all of the digits of the resulting list above. Note that we must again split
+the elements of the list into their digits (e.g. 16 becomes [1,6]).
+
 ```
-Resultado: 0.
+Result: 90.
 ```
 
-Dado que el último valor es 0, sabemos que el número que introducimos es un número de tarjeta de crédito válido. 
-Si cometemos un error de transcripción en el número de tarjeta de crédito y en su lugar proporcionamos 4012888888881891, 
-el resultado del último paso es 2, lo que demuestra que el número no es válido.
+* Finally, we calculate the modulus of 90 over 10.
+```
+Result: 0.
+```
 
-1. Primero necesitamos encontrar los dígitos de un número. Definir una función que retorna una
-       lista de dígitos positivos, decimales (base 10) en orden invertido.
+Since the final value is 0, we know that the above number is a valid credit card number.
+If we make a mistake in typing the credit card number and instead provide 4012888888881891,
+then the result of the last step is 2 , proving that the number is invalid.
+
+1. We need to first find the digits of a number. Define a function
 	   ```
 		toDigitsRev :: Integer -> [ Integer ]
 	   ```
-   (Recordemos que hay que comenzar los duplicados desde la derecha). Puedes definir
-       **toDigitsRev** directamente o con la función:
+   that returns a list of positive, decimal (base-10) digits in reverse order. (Recall that we
+   start doubling from the rightmost digit.) You may define **toDigitsRev** directly or with the
+   function
 	   ```
         toDigits :: Integer -> [ Integer  ]
 	   ```
-       de tal manera que toDigitsRev se define de la siguiente manera
+   such that toDigitsRev is defined as
 	   ```
        toDigitsRev = reverse . toDigits
 	   ```
-       Ejemplo: El resultado de toDigitsRev 1234 es [4,3,2,1].
-       Buen estilo de programación. Si bien esto puede no es necesario para los números
-       de tarjeta de crédito, hacer que toDigitsRev controle correctamente las entradas que son
-       números negativos o ceros.
+   Example: The result of toDigitsRev 1234 is [4,3,2,1].
+   Good programming style: While this may not be necessary for credit card numbers,
+   make toDigitsRev correctly handle inputs that are negative or zero.
 
-2. Una vez que tengamos los dígitos en el orden correcto, tenemos que duplicar cada uno. Define la función
+2. Once we have the digits in the proper order, we need to double every other one.
+   Define the function
 	```
 	   doubleSecond :: (Num a) => [ a  ] -> [ a  ]
 	```
-       que duplique cada segundo dígito de la lista de entrada.
+    that doubles every second number in the input list.
 
-	   Ejemplo: El resultado de doubleSecond [8,7,6,5] es [8,14,6,10].
+    Example: The result of doubleSecond [8,7,6,5] is [8,14,6,10].
  
-3. La salida de doubleSecond tiene una mezcla de un dígito y dos dígitos. Define una
-       función que calcule la suma de todos los dígitos.
+3. The output of doubleSecond has a mix of one-digit and two-digit numbers. Define a
+   function
 	   ```
        sumDigits :: [ Integer  ] -> Integer
 	   ```
-       Ejemplo: El resultado de sumDigits [8,14,6,10] es 20.
+   to calculate the sum of all digits.
+       Example: The result of sumDigits [8,14,6,10] is 20.
 
-4. Define la función
+4. Define the function
 	```
         validate :: Integer -> Bool
 	```
-    que indica que cualquier entrada positiva podría ser un número de tarjeta válida.
-    Esta función se utiliza en todas las funciones definidas en los ejercicios anteriores.
+    that tells whether any positive input could be a valid credit card number. This will use
+    all functions defined in the previous exercises.
 
-    Explique: ¿Por que utilizamos Integer aquí en lugar de un Int o incluso un Integral a => a?
+    Explain: Why do we use Integer here instead of Int or even Integral a ⇒ a?
 
-### Leyendo y mostrando números de tarjeta de crédito
+### Reading and Showing Credit Card Numbers
 
-Está bien utilizar un Integer para un número de tarjeta de crédito internamente, pero nosotros (los consumidores) estamos acostumbrados a ver el número con un formato determinado. En los siguientes ejercicios queremos traducir entre el valor entero 4012888888881881 a la cadena ``4012 8888 8888 1881'' de modo que tenemos un espacio cada cuatro dígitos hacia la derecha. Vamos a suponer que todos los números de tarjetas de crédito en la mayoría son de 16 dígitos. Para los números que tienen menos dígitos, hay que utilizar ceros para llenar los dígitos que faltan. Por lo tanto, 123456789 se convierte en ``0000 0001 2345 6789''.
+It's fine to use an Integer for a credit card number internally, but we (as consumers)
+are accustomed to seeing the number with a certain formatting. In the following exercises, 
+we want to translate between the integer value 4012888888881881 and the string and the string
+"4012 8888 8888 1881", so that we have a space after every fourth digit from the
+right. We'll assume all credit card numbers are at most 16 digits. For numbers that
+have fewer digits, use zeroes to fill out the remaining digits. Thus, 123456789 becomes
+"0000 0001 2345 6789".
 
-5. Definir la función
+5. Define the function
 	```
 	    readCC :: String -> Integer
 	```
-    que analiza el número en el formato descrito anteriormente. Tenga en cuenta que puede
-    utilizar la función ``read :: (Read a) => String -> a`` para convertir cadenas de valores.
-    Consulte la documentación del Prelude para ver la usabilidad de otras funciones que podrían
-    ser útiles.
+    that parses the number in the format described above. Note that you can use the func-
+    tion ``read :: (Read a) => String -> a`` a to convert strings to values. Refer to the Prelude
+    documentation for other useful functions.
 
-	Explique: ¿Cómo puede la función fallar?
+	Explain: How can your function fail?
 
-6.  Definir la función
+6.  Define the function
 	```
 		showCC :: Integer -> String
 	```
-    que imprime el número en el formato descrito anteriormente. Tenga en cuenta que puede
-    utilizar la función de show: (Show a) => a -> String para convertir los valores a
-    cadenas. Consulte la documentación del Prelude para ver la usabilidad de otras funciones
-    que podrían ser útiles.
+    that prints the number in the format described above. Note that you can use the func-
+    tion ``show: (Show a) => a -> String`` to convert values to strings. Refer to the Prelude
+    documentation for other useful functions.
 
-    Explique: ¿Cómo puede su función fallar?
+    Explain: How can your function fail?
 
-### Identificación del tipo de la tarjeta de crédito
+### Identifying Credit Card Type
 
-    Las tarjetas de crédito no sólo tienen una fórmula para la validación de los dígitos,
-    sino que también tienen fórmulas para la determinación del tipo de tarjeta. El tipo
-    se distingue por el emisor y la longitud:
+    Credit cards not only have a formula for validating the digits; they also have formulas
+    for determining the type of card. The type is distinguished by issuer and length:
 
-	* Un prefijo de hasta seis dígitos que sirve como un número de identificación único para la emisor.
-    * La longitud puede variar dentro de los límites específicos de cada prefijo.
+	* A prefix up to six digits long that serves as a unique identification number for the issuer.
+    * The length can vary within precise limits specific to each prefix.
 
-    En esta sección, se pondrá en práctica la identificación de un número de tarjeta de
-    crédito. Con el fin de recopilar la información para la identificación, tendrá que
-    definir operaciones de I/O.
+    In this section, you will implement the identification of a credit card number. In order
+    to collect the information for identification, you will need to define I/O operations.
 
-7. Define la función
+7. Define the function
 	```
 	    lookupIssuer :: String -> Integer -> IO String
 	```
-     que lee los datos de tipo de tarjeta de un archivo (cuyo nombre figura en el primer
-     argumento) y devuelve el emisor, del número de la tarjeta (en el segundo argumento).
+    that reads in card type data from a file (whose name is given in the first argument) and
+    returns the issuer of the card number (in the second argument).
 
-    Un archivo de ejemplo que vamos a llamar data.txt aparece como sigue:
+    A sample file that we’ll call data.txt appears as follows:
 	```
       34 15 American Express
       37 15 American Express
@@ -144,36 +150,37 @@ Está bien utilizar un Integer para un número de tarjeta de crédito internamen
       417500 16 Visa Electron
 	```
 
-    Cada línea contiene un prefijo, un espacio, una longitud(número de dígitos), un
-    espacio y el nombre del emisor. Si el número coincide con el prefijo y la longitud,
-    devuelve el tercer campo, si la búsqueda falla devuelve Unknown.
+    Each line contains a prefix, a space, a length (number of digits), a space, and the name
+    of an issuer.
+    If the number matches a prefix and length, return the third field. If the look-up fails,
+    return the string "Unknown".
 
-	Ejemplo: El resultado de lookupIssuer ``data.txt'' 4012888888881881 es Visa.
+	Example: The result of lookupIssuer "data.txt" 4012888888881881 is "Visa".
 
-8. Este ejercicio utiliza todas las funciones que usted ha escrito en esta práctica.
-   Define la función
+8. This exercise uses all of the functions you have written in this practicum. Define the
+   function
    ```
 		checkCC :: String -> IO ()
    ```
-   que toma el nombre de un archivo que contiene los datos del tipo de tarjeta. Esta
-   función proporciona un programa interactivo en la terminal y sigue estos pasos:
+   that takes the name of a file containing card type data. This function provides an interactive 
+   program at the terminal and follows these steps:
 
-   a) Pide al usuario un número de tarjeta de crédito en el formato utilizado en el inciso cinco.
+   1) Ask the user for a credit card number in the format used for Ex. 5.
 
-   b) Validar el número.
+   2) Validate the number.
 
-   c) Busque el emisor de la tarjeta de crédito.
+   3) Look up the credit card issuer.
 
-   d) Imprimir el siguiente texto:
-	* El número reformateado según lo definido en el inciso seis.
-	* El estado de la validación.
-    * Nombre del emisor o el mensaje de error.
+   4) Print the following:
+	* The reformatted number as defined in Ex. 6.
+	* Status of validation.
+    * Name of issuer or error message.
 
-   e) Volver al primer paso.
+   5) Go back to the first step.
 
-	Puedes terminar el programa tecleando Crtl-C.
+	You can end the program by typing Crtl-C.
 
-    Ejemplo: Esto es lo que una sesión del programa interactivo podría ser:
+    Example: This is what a session in this interactive program might look like:
 
 	```
       ghci> checkCC "data.txt"
@@ -182,31 +189,29 @@ Está bien utilizar un Integer para un número de tarjeta de crédito internamen
       Enter credit card number:
 	```
 
-    En el caso de que una tarjeta sea inválida, no hay necesidad de buscar el tipo:
+    In the case of an invalid card, there is no need to look up the type.
 
 	```
       Enter credit card number: 0004 2222 2222 2223
       The number 0004 2222 2222 2223 is not a valid credit card number.
       Enter credit card number:
 	```
-9. (optional). Define la función
+9. (optional). Define a function
 	```
       toDigitsRevG :: (Integral a) => a -> a -> [ a  ]
 	```
+    that takes a base and an integer and returns a list of positive digits.
 
-      que tome una base, un entero y devuelva una lista de cifras positivas.
-      La base (cualquier número entero mayor que 1) representa la raíz del número.
-      En el inciso uno, asumimos que los números están en base 10 (decimal),
-      pero ahora podemos tomar en cuenta otras bases, por ejemplo, 2 (binario), 8
-      (octal), 16 (hexadecimal), y muchas otras que no tienen nombres.
-      La función toDigitsRevG es más general que toDigitsRev, ya que
-      soporta otros tipos de números enteros como Int. ¿Qué hace que la
-      definición de esta función sea diferente de toDigitsRev? Describe
-      esto en tus propios comentarios.
+    The base (any integer greater than 1 ) represents the radix of the number. In Ex. 1, we
+    assumed numbers were in base 10 (decimal), but now we allow for other bases, e.g. 2
+    (binary), 8 (octal), 16 (hexadecimal), and many others that do not have names.
 
-      En general, queremos funciones Haskell que sean $totales$. Es decir, la función
-      no debe producir errores o valores incorrectos. ¿Cómo se hace de toDigitsRevG
-      una función total? A menudo, una lista vacía ([]) de salida indica que los argumentos
-      no son válidos. Por lo tanto, si la función verifica que cuando los argumentos son
-      inválidos se devuelve una lista vacía, todavía será total. Explica cómo hacer esto
-      para toDigitsRevG en tus propios comentarios.
+    The function toDigitsRevG is more general than toDigitsRev , because it supports other
+    types of integers such as Int . What makes the definition of this function different from
+    toDigitsRev ? Describe this in your comments.
+
+    In general, we want Haskell functions to be total. That is, the function should not
+    produce any errors or incorrect values. How do you make toDigitsRevG a total function?
+    Often, an empty list ([ ]) output indicates that the arguments are invalid. Thus, if the
+    function checks for invalid arguments and returns an empty list, it will still be total.
+    Explain how you do this for toDigitsRevG in your comments.
