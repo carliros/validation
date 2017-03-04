@@ -1,15 +1,24 @@
--- Name (number): 
--- Name (number): 
+module Main where
 
-module Practicum1 where
+main :: IO ()
+main = do
+  putStrLn "hello world"
 
 -- Ex. 1
 toDigitsRev :: Integer -> [Integer]
-toDigitsRev = undefined
+toDigitsRev = reverse . toDigits . show
+
+toDigits :: String -> [Integer]
+toDigits n = map toRead n
+  where toRead :: Char -> Integer
+        toRead n = read (n : [])
+
 
 -- Ex. 2
 doubleSecond :: (Num a) => [a] -> [a]
-doubleSecond = undefined
+doubleSecond list = let zipList = zip list [1 .. (length list)]
+                        multPar (n, p) = if ( p `mod` 2 == 0) then n * 2 else n
+                    in map multPar zipList
 
 -- Ex. 3
 sumDigits :: [Integer] -> Integer
@@ -38,4 +47,3 @@ checkCC = undefined
 -- Ex. 9: BONUS! Leave undefined if you do not do it.
 toDigitsRevG :: (Integral a) => a -> a -> [a]
 toDigitsRevG = undefined
-
