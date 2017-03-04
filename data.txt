@@ -1,0 +1,10 @@
+34 15 American Express
+37 15 American Express
+560221 16 Bankcard
+6011 16 Discover Card
+65 16 Discover Card
+51 16 Master Card
+52 16 Master Card
+4 13 Visa
+4 16 Visa
+417500 16 Visa Electron
